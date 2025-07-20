@@ -106,7 +106,7 @@ async function updateReactConfig(contractAddress) {
 
     // Update contract address
     const updatedContent = configContent.replace(
-      /export const CONTRACT_ADDRESS = "[^"]*";/,
+      /export const CONTRACT_ADDRESS = "[^"]*";/g,
       `export const CONTRACT_ADDRESS = "${contractAddress}";`
     );
 

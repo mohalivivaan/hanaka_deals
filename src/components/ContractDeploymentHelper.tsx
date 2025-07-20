@@ -11,6 +11,7 @@ export function ContractDeploymentHelper() {
   }
 
   const isPlaceholderAddress = CONTRACT_ADDRESS === "0x1234567890123456789012345678901234567890"
+    || CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
 
   const contractCode = `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
@@ -122,8 +123,17 @@ contract BNBDistributor {
               <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
                 <h4 className="text-green-400 font-medium mb-2">Step 2: Deploy Contract</h4>
                 <div className="space-y-3">
+                  <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-3">
+                    <h5 className="text-blue-400 font-medium mb-2">🚀 Automated Deployment (Recommended)</h5>
+                    <div className="text-blue-300 text-sm space-y-2">
+                      <p>1. Run: <code className="bg-black/20 px-2 py-1 rounded">npm run setup</code></p>
+                      <p>2. Add your private key to .env file</p>
+                      <p>3. Run: <code className="bg-black/20 px-2 py-1 rounded">npm run deploy</code></p>
+                      <p>4. Contract address will be updated automatically!</p>
+                    </div>
+                  </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-green-300 text-sm">Use Remix IDE for easy deployment:</span>
+                    <span className="text-green-300 text-sm">Or use Remix IDE for manual deployment:</span>
                     <a
                       href="https://remix.ethereum.org/"
                       target="_blank"

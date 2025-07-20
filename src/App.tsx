@@ -72,9 +72,8 @@ function AppContent() {
         <TestModeToggle onModeChange={handleModeChange} />
 
         {/* Contract Deployment Helper */}
-        {showContractHelper && !isTestMode && (
+        {!isTestMode && (
           <ContractDeploymentHelper />
-        )}
 
         {/* Wallet Connection */}
         {showWalletSelector && (

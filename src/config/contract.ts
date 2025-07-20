@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = "0x1234567890123456789012345678901234567890"; // Update this with your deployed BNB contract address
+export const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Will be updated after deployment
 
 // BNB Distributor Contract ABI
 export const CONTRACT_ABI = [

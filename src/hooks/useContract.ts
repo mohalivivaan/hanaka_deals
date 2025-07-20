@@ -15,6 +15,7 @@ export function useBNBDistributorContract() {
     gas: GAS_SETTINGS.gasLimit,
     query: {
       enabled: CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890",
+        && CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000",
     },
   })
   
@@ -102,6 +103,7 @@ export function useContractValidation() {
 
   const isContractValid = !!totalAmount && !validationError
   const isPlaceholderAddress = CONTRACT_ADDRESS === "0x1234567890123456789012345678901234567890"
+    || CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
 
   return {
     isContractValid,
