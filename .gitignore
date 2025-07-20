@@ -1,2 +1,24 @@
 node_modules/
 .env
+dist
+dist-ssr
+*.local
+
+# Hardhat
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+
+# Hardhat artifacts
+cache
+artifacts
+
+# Deployment info (optional - you may want to commit this)
+deployments/
+
+# IDE
+.vscode/
+.idea/
