@@ -6,6 +6,12 @@ import { CONTRACT_ADDRESS, CONTRACT_ABI, PAYMENT_AMOUNTS, GAS_SETTINGS } from '.
 export function useBNBDistributorContract() {
   const { writeContract, data: distributeHash, isPending: isDistributing, error: distributeError } = useWriteContract()
   
+  // Check if contract address is valid (not placeholder)
+  const isValidAddress = CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000" 
+    && CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890"
+    && CONTRACT_ADDRESS.length === 42
+    && CONTRACT_ADDRESS.startsWith('0x')
+  
   // Simulate the contract call first to check if it will succeed
   const { data: simulateData, error: simulateError } = useSimulateContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
@@ -14,13 +20,16 @@ export function useBNBDistributorContract() {
     value: parseUnits(PAYMENT_AMOUNTS.total, 18),
     gas: GAS_SETTINGS.gasLimit,
     query: {
-      enabled: CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890",
-        && CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000",
+      enabled: isValidAddress,
     },
   })
   
   const distribute = async () => {
     try {
+      if (!isValidAddress) {
+        throw new Error('Please deploy the contract and update CONTRACT_ADDRESS in src/config/contract.ts')
+      }
+
       const amountWei = parseUnits(PAYMENT_AMOUNTS.total, 18)
       console.log('Executing BNB distribute function:', {
         contractAddress: CONTRACT_ADDRESS,
@@ -28,11 +37,6 @@ export function useBNBDistributorContract() {
         amountWei: amountWei.toString(),
         gasLimit: GAS_SETTINGS.gasLimit.toString()
       })
-
-      // Check if contract address is valid
-      if (CONTRACT_ADDRESS === "0x1234567890123456789012345678901234567890") {
-        throw new Error('Please deploy the contract and update CONTRACT_ADDRESS in src/config/contract.ts')
-      }
       
       return writeContract({
         address: CONTRACT_ADDRESS as `0x${string}`,
@@ -53,7 +57,7 @@ export function useBNBDistributorContract() {
     isDistributing,
     distributeError,
     simulateError,
-    canExecute: !!simulateData && !simulateError
+    canExecute: !!simulateData && !simulateError && isValidAddress
   }
 }
 
@@ -75,12 +79,17 @@ export function useBNBBalance(address: `0x${string}` | undefined) {
 }
 
 export function useContractInfo() {
+  const isValidAddress = CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000" 
+    && CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890"
+    && CONTRACT_ADDRESS.length === 42
+    && CONTRACT_ADDRESS.startsWith('0x')
+
   const { data: contractInfo, error: contractError } = useReadContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
     abi: CONTRACT_ABI,
     functionName: 'getContractInfo',
     query: {
-      enabled: !!CONTRACT_ADDRESS && CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890",
+      enabled: isValidAddress,
     },
   })
 
@@ -92,18 +101,22 @@ export function useContractInfo() {
 
 // Check if contract is deployed and accessible
 export function useContractValidation() {
+  const isValidAddress = CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000" 
+    && CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890"
+    && CONTRACT_ADDRESS.length === 42
+    && CONTRACT_ADDRESS.startsWith('0x')
+
   const { data: totalAmount, error: validationError } = useReadContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
     abi: CONTRACT_ABI,
     functionName: 'TOTAL_AMOUNT',
     query: {
-      enabled: !!CONTRACT_ADDRESS && CONTRACT_ADDRESS !== "0x1234567890123456789012345678901234567890",
+      enabled: isValidAddress,
     },
   })
 
   const isContractValid = !!totalAmount && !validationError
-  const isPlaceholderAddress = CONTRACT_ADDRESS === "0x1234567890123456789012345678901234567890"
-    || CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
+  const isPlaceholderAddress = !isValidAddress
 
   return {
     isContractValid,

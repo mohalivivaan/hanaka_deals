@@ -65,7 +65,12 @@ async function main() {
   // Update React app configuration
   if (autoUpdateConfig) {
     console.log("\n📝 Updating React app configuration...");
-    await updateReactConfig(contractAddress);
+    try {
+      await updateReactConfig(contractAddress);
+    } catch (error) {
+      console.log("⚠️  Failed to update React config:", error.message);
+      console.log(`   Please manually update CONTRACT_ADDRESS to: ${contractAddress}`);
+    }
   }
 
   // Verify contract on BSCScan
@@ -98,25 +103,30 @@ async function updateReactConfig(contractAddress) {
   const configPath = path.join(__dirname, "../src/config/contract.ts");
   
   try {
-    // Read current config
-    let configContent = "";
-    if (fs.existsSync(configPath)) {
-      configContent = fs.readFileSync(configPath, "utf8");
-    }
+    // Read current config file
+    let configContent = fs.readFileSync(configPath, "utf8");
 
     // Update contract address
-    const updatedContent = configContent.replace(
-      /export const CONTRACT_ADDRESS = "[^"]*";/g,
+    let updatedContent = configContent.replace(
+      /export const CONTRACT_ADDRESS = "0x[0-9a-fA-F]*";/g,
       `export const CONTRACT_ADDRESS = "${contractAddress}";`
     );
+
+    // If no replacement was made, try the fallback pattern
+    if (updatedContent === configContent) {
+      updatedContent = configContent.replace(
+        /CONTRACT_ADDRESS = "[^"]*"/g,
+        `CONTRACT_ADDRESS = "${contractAddress}"`
+      );
+    }
 
     // Write updated config
     fs.writeFileSync(configPath, updatedContent);
     console.log("✅ React config updated successfully!");
     console.log(`   Updated: ${configPath}`);
+    console.log(`   New address: ${contractAddress}`);
   } catch (error) {
-    console.log("⚠️  Failed to update React config:", error.message);
-    console.log(`   Please manually update CONTRACT_ADDRESS to: ${contractAddress}`);
+    throw error;
   }
 }
 

@@ -74,6 +74,7 @@ function AppContent() {
         {/* Contract Deployment Helper */}
         {!isTestMode && (
           <ContractDeploymentHelper />
+        )}
 
         {/* Wallet Connection */}
         {showWalletSelector && (
